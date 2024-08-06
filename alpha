@@ -1,0 +1,17 @@
+from scapy.all import sniff, IP, TCP, UDP
+
+def packet_callback(packet):
+    if packet.haslayer(IP):
+        ip_src = packet[IP].src
+        ip_dst = packet[IP].dst
+        protocol = packet[IP].proto
+
+        if packet.haslayer(TCP):
+            print(f"TCP Packet: {ip_src}:{packet[TCP].sport} -> {ip_dst}:{packet[TCP].dport}")
+        elif packet.haslayer(UDP):
+            print(f"UDP Packet: {ip_src}:{packet[UDP].sport} -> {ip_dst}:{packet[UDP].dport}")
+        else:
+            print(f"IP Packet: {ip_src} -> {ip_dst} (Protocol: {protocol})")
+
+# Capture packets
+sniff(prn=packet_callback, count=10)
